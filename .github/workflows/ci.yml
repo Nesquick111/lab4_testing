@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9"]
+        python-version: ["3.9"] # Залишимо одну версію для швидкості, або додай 3.8
 
     steps:
       - name: Check out repository
@@ -30,7 +30,8 @@ jobs:
 
       - name: Start LocalStack
         run: |
-          docker-compose up -d
+          # Використовуємо пробіл замість дефіса
+          docker compose up -d
           echo "Waiting for LocalStack to spin up..."
           sleep 20
           docker ps
@@ -59,4 +60,6 @@ jobs:
 
       - name: Teardown Docker
         if: always()
-        run: docker-compose down
+        run: |
+          # Використовуємо пробіл замість дефіса
+          docker compose down

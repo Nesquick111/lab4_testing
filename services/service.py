@@ -18,8 +18,15 @@ class ShippingService:
         return ['Нова Пошта', 'Укр Пошта', 'Meest Express', 'Самовивіз']
 
     def create_shipping(self, shipping_type, product_ids, order_id, due_date):
-        if shipping_type not in self.list_available_shipping_type(): raise ValueError("Shipping type is not available")
-        if due_date <= datetime.now(timezone.utc): raise ValueError("Due date must be in future")
+        if shipping_type not in self.list_available_shipping_type():
+            raise ValueError("Shipping type is not available")
+
+        # ЗАХИСТ: якщо прийшов None, ставимо завтрашню дату
+        if due_date is None:
+            due_date = datetime.now(timezone.utc) + timedelta(days=1)
+
+        if due_date <= datetime.now(timezone.utc):
+            raise ValueError("Due date must be in future")
 
         ship_id = self.repository.create_shipping(shipping_type, product_ids, order_id, self.SHIPPING_CREATED, due_date)
         self.publisher.send_new_shipping(ship_id)

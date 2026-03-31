@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
+env:
+  LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: 1
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+  AWS_DEFAULT_REGION: us-east-1
+
 jobs:
   test-suite:
     runs-on: ubuntu-latest
@@ -22,19 +28,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
       - name: Start LocalStack
-        run: docker-compose up -d
-
-      - name: Wait for LocalStack to be ready
         run: |
-          echo "Waiting for LocalStack to be ready..."
-          timeout 60s bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "\"dynamodb\": \"running\""; do echo "Still waiting..."; sleep 5; done'
-          echo "LocalStack is up and running!"
+          docker-compose up -d
+          echo "Waiting for LocalStack to spin up..."
+          sleep 20
+          docker ps
 
       - name: Install dependencies
         run: |

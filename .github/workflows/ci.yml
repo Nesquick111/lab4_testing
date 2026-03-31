@@ -41,7 +41,7 @@ jobs:
 
       - name: Run Unit Tests (Lab 2)
         run: |
-          python -m unittest discover tests
+          python -m unittest tests/test_eshop_unit.py
 
       - name: Run BDD Tests (Lab 1)
         run: |

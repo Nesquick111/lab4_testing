@@ -1,4 +1,5 @@
 import uuid
+from dataclasses import dataclass
 
 class Product:
     def __init__(self, name, price, available_amount):
@@ -64,3 +65,10 @@ class Order:
         if self.shipping_service:
             return self.shipping_service.create_shipping(shipping_type, product_ids, self.order_id, due_date)
         return "order_placed_locally"
+
+@dataclass
+class Shipment:
+    shipping_id: str
+    shipping_service: any
+    def check_shipping_status(self):
+        return self.shipping_service.check_status(self.shipping_id)
